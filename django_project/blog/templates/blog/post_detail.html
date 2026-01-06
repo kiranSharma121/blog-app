@@ -1,0 +1,106 @@
+{% extends "blog/base.html" %} {% block content %}
+
+<style>
+  .post-container {
+    max-width: 780px;
+    margin: auto;
+  }
+
+  .post-title {
+    font-size: 2.4rem;
+    font-weight: 800;
+    line-height: 1.2;
+    color: #0f172a;
+  }
+
+  .author-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
+  .post-meta {
+    font-size: 0.9rem;
+    color: #6b7280;
+  }
+
+  .post-content {
+    font-size: 1.05rem;
+    line-height: 1.85;
+    color: #1f2937;
+    white-space: pre-line;
+  }
+
+  .post-content p {
+    margin-bottom: 1.2rem;
+  }
+
+  .accent-line {
+    width: 60px;
+    height: 4px;
+    background: #2563eb;
+    border-radius: 10px;
+    margin-bottom: 1.5rem;
+  }
+
+  .action-btn {
+    font-size: 0.75rem;
+    padding: 5px 12px;
+    border-radius: 999px;
+  }
+</style>
+
+<div class="post-container mt-5">
+  <article class="card border-0 shadow-sm rounded-4">
+    <div class="card-body p-4 p-md-5">
+      <h1 class="post-title mb-3">{{ object.title }}</h1>
+
+      <div class="accent-line"></div>
+
+      <div
+        class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3"
+      >
+        <div class="d-flex align-items-center">
+          <img
+            src="{{ object.author.profile.image.url }}"
+            class="author-avatar me-3"
+            alt="author avatar"
+          />
+          <div>
+            <a
+              class="fw-semibold text-decoration-none"
+              href="{% url 'user-post' object.author.username %}"
+            >
+              {{ object.author }}
+            </a>
+            <div class="post-meta">{{ object.date_posted|date:"F d, Y" }}</div>
+          </div>
+        </div>
+
+        {% if object.author == user %}
+        <div class="d-flex gap-2">
+          <a
+            href="{% url 'post-update' object.id %}"
+            class="btn btn-outline-secondary action-btn"
+          >
+            Edit
+          </a>
+          <a
+            href="{% url 'post-delete' object.id %}"
+            class="btn btn-outline-danger action-btn"
+          >
+            Delete
+          </a>
+        </div>
+        {% endif %}
+      </div>
+
+      <hr class="mb-4" />
+
+      <div class="post-content">{{ object.content }}</div>
+    </div>
+  </article>
+</div>
+
+{% endblock content %}

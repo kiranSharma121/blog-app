@@ -1,0 +1,74 @@
+{% extends "blog/base.html" %} {% load crispy_forms_tags %} {% block content %}
+
+<div class="row justify-content-center">
+  <div class="col-md-10 col-lg-8">
+    <div class="card shadow-sm border-0 mt-4">
+      <div class="card-body p-4">
+        <div class="d-flex align-items-center mb-4">
+          <img
+            src="{{ user.profile.image.url }}"
+            class="rounded-circle me-4"
+            style="width: 120px; height: 120px; object-fit: cover"
+          />
+
+          <div>
+            <h3 class="mb-1 fw-semibold">{{ user.username }}</h3>
+            <p class="text-muted mb-2">{{ user.email }}</p>
+
+            <button
+              class="btn btn-outline-primary btn-sm"
+              onclick="toggleEdit()"
+            >
+              Edit Profile
+            </button>
+          </div>
+        </div>
+
+        <div class="row mt-3">
+          <div class="col-sm-6 mb-3">
+            <small class="text-muted">Username</small>
+            <p class="fw-medium mb-0">{{ user.username }}</p>
+          </div>
+          <div class="col-sm-6 mb-3">
+            <small class="text-muted">Email</small>
+            <p class="fw-medium mb-0">{{ user.email }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      id="editForm"
+      class="card shadow-sm border-0 mt-4"
+      style="display: none"
+    >
+      <div class="card-body p-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h5 class="mb-0">Update Profile</h5>
+          <button
+            class="btn btn-sm btn-outline-secondary"
+            onclick="toggleEdit()"
+          >
+            Cancel
+          </button>
+        </div>
+
+        <form method="POST" enctype="multipart/form-data">
+          {% csrf_token %} {{ u_form|crispy }} {{ p_form|crispy }}
+
+          <div class="d-grid mt-3">
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  function toggleEdit() {
+    const form = document.getElementById("editForm");
+    form.style.display = form.style.display === "none" ? "block" : "none";
+    window.scrollTo({ top: form.offsetTop - 80, behavior: "smooth" });
+  }
+</script>
+
+{% endblock content %}

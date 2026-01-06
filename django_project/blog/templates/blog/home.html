@@ -1,0 +1,145 @@
+{% extends "blog/base.html" %} {% block content %}
+
+<style>
+  .post-card {
+    position: relative;
+    background: #ffffff;
+    border-radius: 18px;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .post-card::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 4px;
+    background: #2563eb;
+    opacity: 0;
+    pointer-events: none; /* 🔥 FIX */
+    transition: opacity 0.3s ease;
+  }
+
+  .post-card:hover::before {
+    opacity: 1;
+  }
+
+  .post-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 24px 50px rgba(0, 0, 0, 0.08);
+  }
+
+  .author-avatar {
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
+  .post-meta a {
+    text-decoration: none;
+    color: #111827;
+  }
+
+  .post-meta a:hover {
+    color: #2563eb;
+  }
+
+  .post-title a {
+    text-decoration: none;
+    color: #0f172a;
+  }
+
+  .post-title a:hover {
+    color: #2563eb;
+  }
+
+  .post-content {
+    color: #475569;
+    line-height: 1.75;
+    font-size: 0.95rem;
+  }
+
+  .pagination .page-link {
+    border-radius: 10px;
+    margin: 0 4px;
+  }
+</style>
+
+<div class="row">
+  <div class="col-lg-8 col-md-10 mx-auto">
+    <header class="text-center mb-5">
+      <h1 class="fw-bold mb-2">Latest Articles</h1>
+      <p class="text-muted">
+        Thoughts, tutorials, and insights from the community
+      </p>
+    </header>
+
+    {% for post in posts %}
+    <article class="post-card mb-4 shadow-sm">
+      <div class="p-4 p-md-5">
+        <!-- Author -->
+        <div class="d-flex align-items-center mb-4 post-meta">
+          <img
+            src="{{ post.author.profile.image.url|default:'/static/images/default-avatar.png' }}"
+            class="author-avatar me-3"
+            alt="author avatar"
+          />
+          <div>
+            <a
+              class="fw-semibold"
+              href="{% url 'user-post' post.author.username %}"
+            >
+              {{ post.author }}
+            </a>
+            <div class="text-muted small">
+              {{ post.date_posted|date:"F d, Y" }}
+            </div>
+          </div>
+        </div>
+
+        
+        <h3 class="post-title fw-bold mb-3">
+          <a href="{% url 'post-detail' post.id %}"> {{ post.title }} </a>
+        </h3>
+
+   
+        <p class="post-content mb-0">{{ post.content|truncatechars:220 }}</p>
+      </div>
+    </article>
+    {% empty %}
+    <p class="text-center text-muted mt-5">No posts available.</p>
+    {% endfor %}
+    {% if is_paginated %}
+    <nav class="mt-5">
+      <ul class="pagination justify-content-center">
+        {% if page_obj.has_previous %}
+        <li class="page-item">
+          <a class="page-link" href="?page={{ page_obj.previous_page_number }}">
+            ← Prev
+          </a>
+        </li>
+        {% endif %} {% for num in page_obj.paginator.page_range %} {% if num == page_obj.number %}
+        <li class="page-item active">
+          <span class="page-link">{{ num }}</span>
+        </li>
+        {% elif num >= page_obj.number|add:"-3" and num <= page_obj.number|add:"3" %}
+        <li class="page-item">
+          <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+        </li>
+        {% endif %} {% endfor %} {% if page_obj.has_next %}
+        <li class="page-item">
+          <a class="page-link" href="?page={{ page_obj.next_page_number }}">
+            Next →
+          </a>
+        </li>
+        {% endif %}
+      </ul>
+    </nav>
+    {% endif %}
+  </div>
+</div>
+
+{% endblock content %}
