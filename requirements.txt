@@ -3,3 +3,4 @@ gunicorn==23.0.0
 django-crispy-forms==2.5
 crispy-bootstrap5==2025.6
 Pillow
+dj-database-url
